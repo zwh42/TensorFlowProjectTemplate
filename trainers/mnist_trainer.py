@@ -1,10 +1,10 @@
-from base.base_train import BaseTrainer
+from base.base_trainer import BaseTrainer
 import numpy as np
 
 
-class ExampleTrainer(BaseTrainer):
+class MNISTTrainer(BaseTrainer):
     def __init__(self, sess, model, data, config,logger):
-        super(ExampleTrainer, self).__init__(sess, model, data, config,logger)
+        super(MNISTTrainer, self).__init__(sess, model, data, config,logger)
 
     def train_epoch(self):
         loop = range(self.config.num_iter_per_epoch)

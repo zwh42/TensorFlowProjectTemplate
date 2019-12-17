@@ -12,11 +12,18 @@ class BaseTrainer:
         self.sess.run(self.init)
 
     def train(self):
-        for cur_epoch in range(self.model.cur_epoch_tensor.eval(self.sess), self.config.num_epochs + 1, 1):
-            self.train_epoch()
-            self.sess.run(self.model.increment_cur_epoch_tensor)
 
-    def train_epoch(self):
+        if self.config["transfer_learning"] is True:
+            self.sess.run(tf.assign(self.model.current_epoch_tensor, 0))
+            print("transfer learning mode, assign epoch = 0.")
+        else:
+            print("regular training mode, current epoch: {}.".format(self.sess.run(self.model.current_epoch_tensor)))
+        
+        for current_epoch in range(self.model.current_epoch_tensor.eval(self.sess), self.config["num_epochs"] + 1, 1):
+            self.train_epoch(current_epoch)
+            self.sess.run(self.model.increment_current_epoch_tensor)
+
+    def train_epoch(self, current_epoch):
         """
         implement the logic of epoch:
         -loop over the number of iterations in the config and call the train step

@@ -149,7 +149,7 @@ Folder structure
     The base model contains:
     - ***Save*** -This function to save a checkpoint to the desk. 
     - ***Load*** -This function to load a checkpoint from the desk.
-    - ***Cur_epoch, Global_step counters*** -These variables to keep track of the current epoch and global step.
+    - ***current_epoch, Global_step counters*** -These variables to keep track of the current epoch and global step.
     - ***Init_Saver*** An abstract function to initialize the saver used for saving and loading the checkpoint, ***Note***: override this function in the model you want to implement.
     - ***Build_model*** Here's an abstract function to define the model, ***Note***: override this function in the model you want to implement.
 - #### **Your model**
