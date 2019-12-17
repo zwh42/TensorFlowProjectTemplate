@@ -1,4 +1,7 @@
 # Tensorflow Project Template
+## This work is a modification version based on the [original template](https://github.com/MrGemy95/Tensorflow-Project-Template) from [MrGemy95](https://github.com/MrGemy95)   
+
+
 A simple and well designed structure is essential for any Deep Learning project, so after a lot of practice and contributing in tensorflow projects here's a tensorflow project template that combines   **simplcity**, **best practice for folder structure** and **good OOP design**.
 The main idea is that there's much stuff you do every time you start your tensorflow project, so wrapping all this shared stuff will help you to change just the core idea every time you start a new tensorflow project.
 

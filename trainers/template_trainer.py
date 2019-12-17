@@ -1,4 +1,4 @@
-from base.base_train import BaseTrain
+from base.base_train import BaseTrainer
 from tqdm import tqdm
 import numpy as np
 
