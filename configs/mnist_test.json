@@ -6,7 +6,7 @@
   "learning_rate": 0.001,
   "batch_size": 16,
   "input_size": [28, 28],
-  "output_size": [10, 1],
+  "output_size": [10],
   "input_node_name": "mnist_input",
   "output_node_name": "mnist_output",
   "max_to_keep":5

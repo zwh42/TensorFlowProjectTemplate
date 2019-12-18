@@ -23,11 +23,16 @@ class MNISTTrainer(BaseTrainer):
             'acc': acc,
         }
         self.logger.summarize(cur_it, summaries_dict=summaries_dict)
-        self.model.save(self.sess)
+        self.model.save_checkpoint(self.sess)
 
     def train_step(self, current_epoch, current_iter):
         batch_x, batch_y = next(self.data.next_batch(self.config["batch_size"]))
         feed_dict = {self.model.x: batch_x, self.model.y: batch_y, self.model.is_training: True}
         _, loss, acc = self.sess.run([self.model.train_step, self.model.loss, self.model.acc],
                                      feed_dict=feed_dict)
+        
+        log_text = "epoch: {}, step: {}, loss: {}, acc: {}\n".\
+            format(current_epoch, current_iter, loss, acc)
+        self.logger.logger["train"].info(log_text)    
+
         return loss, acc
