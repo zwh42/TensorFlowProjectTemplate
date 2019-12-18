@@ -1,6 +1,7 @@
 import argparse
 import json
 import os
+from pprint import pprint
 
 
 def get_args():
@@ -11,6 +12,7 @@ def get_args():
         default='None',
         help='The Configuration file')
     args = argparser.parse_args()
+    
     return args
 
 
@@ -25,14 +27,22 @@ def get_config_from_json(json_file):
     # parse the configurations from the config json file provided
     with open(json_file, 'r') as config_file:
         config_dict = json.load(config_file)
+       
+        pprint(config_dict)
 
     return  config_dict
 
 
 def process_config(json_file):
     config = get_config_from_json(json_file)
-    config.summary_dir = os.path.join("../experiments", config["exp_name"], "summary/")
-    config.checkpoint_dir = os.path.join("../experiments", config["exp_name"], "checkpoint/")
+    
+    ##add a few dir for later use
+    config["summary_dir"] = os.path.join("../experiments", config["exp_name"], "summary/")
+    config["checkpoint_dir"] = os.path.join("../experiments", config["exp_name"], "checkpoint/")
+    config["log_dir"] = os.path.join("./experiments", config["exp_name"], "logs/")
+    config["model_dir"] = os.path.join("./experiments", config["exp_name"], "model/")    
+    
+
     return config
 
 

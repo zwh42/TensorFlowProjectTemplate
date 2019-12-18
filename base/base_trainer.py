@@ -31,7 +31,7 @@ class BaseTrainer:
         """
         raise NotImplementedError
 
-    def train_step(self):
+    def train_step(self, current_epoch, current_iter):
         """
         implement the logic of the train step
         - run the tensorflow session

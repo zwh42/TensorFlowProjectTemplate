@@ -2,8 +2,9 @@ import tensorflow as tf
 from tensorflow.python.framework import graph_util
 
 class BaseModel:
-    def __init__(self, config):
+    def __init__(self, config, logger):
         self.config = config
+        self.logger = logger.logger
         # init the global step
         self.init_global_step()
         # init the epoch counter

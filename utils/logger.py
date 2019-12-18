@@ -1,16 +1,25 @@
 import tensorflow as tf
 import os
+import logging
 
 
 class Logger:
-    def __init__(self, sess,config):
+    def __init__(self, sess, config):
         self.sess = sess
         self.config = config
         self.summary_placeholders = {}
         self.summary_ops = {}
-        self.train_summary_writer = tf.summary.FileWriter(os.path.join(self.config.summary_dir, "train"),
+        self.train_summary_writer = tf.summary.FileWriter(os.path.join(self.config["summary_dir"], "train"),
                                                           self.sess.graph)
-        self.test_summary_writer = tf.summary.FileWriter(os.path.join(self.config.summary_dir, "test"))
+        self.test_summary_writer = tf.summary.FileWriter(os.path.join(self.config["summary_dir"], "test"))
+
+        self.logger = {}
+        
+        self.logger["flow"] = self.setup_logger("flow", log_file = os.path.join(self.config["log_dir"], "flow.log"), \
+            format = '[%(asctime)s] %(message)s', level=logging.INFO, print_to_screen = True)
+        
+        self.logger["train"] = self.setup_logger("train", log_file = os.path.join(self.config["log_dir"], "training_record.log"), \
+            format = '%(message)s', level=logging.INFO, print_to_screen = True)
 
     # it can summarize scalars and images.
     def summarize(self, step, summarizer="train", scope="", summaries_dict=None):
@@ -42,3 +51,19 @@ class Logger:
                 for summary in summary_list:
                     summary_writer.add_summary(summary, step)
                 summary_writer.flush()
+
+
+    def setup_logger(self, name, log_file, format = '[%(asctime)s] %(message)s', level=logging.INFO, print_to_screen = True):
+        """ set up logger """
+        formatter = logging.Formatter(format)
+
+        handler = logging.FileHandler(log_file, mode = "w")        
+        handler.setFormatter(formatter)
+
+        logger = logging.getLogger(name)
+        logger.setLevel(level)
+        logger.addHandler(handler)
+        if print_to_screen:
+            logger.addHandler(logging.StreamHandler())
+
+        return logger
