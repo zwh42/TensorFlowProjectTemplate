@@ -41,19 +41,20 @@ class MNISTModel(BaseModel):
         self.x = tf.placeholder(tf.float32, shape=[None] + self.config["input_size"], name = self._input_node_name)
         self.y = tf.placeholder(tf.float32, shape=[None] + self.config["output_size"], name = self._output_node_name)
 
-       
-        # network architecture
-        layer = tf.reshape(self.x, [-1, 28, 28, 1])
-        layer = conv2d(layer, weight_variable([5, 5, 1, 32]), bias_variable([32]), padding='SAME')
-        layer = maxpool2d(layer, k = 2)
-        layer = conv2d(layer, weight_variable([5, 5, 32, 64]), bias_variable([64]), padding='SAME')
-        layer = maxpool2d(layer, k = 2)
+        with tf.name_scope("mnist_model"):
+            # network architecture
+            layer = tf.reshape(self.x, [-1, 28, 28, 1])
+            layer = conv2d(layer, weight_variable([5, 5, 1, 32]), bias_variable([32]), padding='SAME')
+            layer = maxpool2d(layer, k = 2)
+            layer = conv2d(layer, weight_variable([5, 5, 32, 64]), bias_variable([64]), padding='SAME')
+            layer = maxpool2d(layer, k = 2)
+            
+            self.logger.logging("flow", "before flatten shape: {}".format(layer.shape))
+            layer = tf.reshape(layer, [-1, 7*7*64])
+            self.logger.logging("flow", "after flatten shape: {}".format(layer.shape))
+            layer = tf.layers.dense(layer, 32)
+            layer = tf.layers.dense(layer, 10)    
         
-        self.logger.logging("flow", "before flatten shape: {}".format(layer.shape))
-        layer = tf.reshape(layer, [-1, 7*7*64])
-        self.logger.logging("flow", "after flatten shape: {}".format(layer.shape))
-        layer = tf.layers.dense(layer, 32)
-        layer = tf.layers.dense(layer, 10)    
         self.model_output = tf.identity(layer, name = self._output_node_name)        
 
         self.set_train_step(self.y, self.model_output)

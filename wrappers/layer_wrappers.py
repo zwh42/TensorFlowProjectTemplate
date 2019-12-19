@@ -5,17 +5,23 @@ import numpy as np
 
 def conv2d(x, W, b, strides=1, padding = "VALID",  name=None):
     # Conv2D wrapper, with bias and relu activation
-    x = tf.nn.conv2d(x, W, strides=[1, strides, strides, 1], padding = padding, name = name)
-    x = tf.nn.bias_add(x, b)
-    return tf.nn.relu(x)
+    with tf.name_scope(name):
+        x = tf.nn.conv2d(x, W, strides=[1, strides, strides, 1], padding = padding, name = name)
+        x = tf.nn.bias_add(x, b)
+        x = tf.nn.relu(x)
+        return x
 
-def maxpool2d(x, k=2, padding = "VALID"):
+def maxpool2d(x, k=2, padding = "VALID", name = None):
     # MaxPool2D wrapper
-    return tf.nn.max_pool(x, ksize=[1, k, k, 1], strides=[1, k, k, 1],
+    with tf.name_scope(name):
+        x = tf.nn.max_pool(x, ksize=[1, k, k, 1], strides=[1, k, k, 1],
                           padding= padding)
+    return x
 
-def batch_normalization(x, is_training=True, scale=True, updates_collections=None):
-    return tf.contrib.layers.batch_norm(x, is_training=is_training, scale=scale, updates_collections=updates_collections)
+def batch_normalization(x, is_training=True, scale=True, updates_collections=None, name = None):
+    with tf.name_scope(name):
+        x =  tf.contrib.layers.batch_norm(x, is_training=is_training, scale=scale, updates_collections=updates_collections)
+        return x
 
 def weight_variable(shape, stddev = 0.02, name = None):
     initial = tf.truncated_normal(shape, stddev = stddev)

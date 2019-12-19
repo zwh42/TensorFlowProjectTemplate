@@ -18,7 +18,7 @@ class BaseTrainer:
             self.sess.run(tf.assign(self.model.current_epoch_tensor, 0))
             self.logger.logging("flow", "transfer learning mode, assign epoch = 0.")
         else:
-            self.logger.logging("regular training mode, current epoch: {}.".format(self.sess.run(self.model.current_epoch_tensor)))
+            self.logger.logging("flow", "regular training mode, current epoch: {}.".format(self.sess.run(self.model.current_epoch_tensor)))
         
         for current_epoch in range(self.model.current_epoch_tensor.eval(self.sess), self.config["num_epochs"] + 1, 1):
             self.train_epoch(current_epoch)

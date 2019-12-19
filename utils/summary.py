@@ -9,15 +9,17 @@ class Summary:
         self.config = config
         self.summary_placeholders = {}
         self.summary_ops = {}
-        self.train_summary_writer = tf.summary.FileWriter(os.path.join(self.config["summary_dir"], "train"),
+        self.summary_writer = {}
+        self.summary_writer["train"] = tf.summary.FileWriter(os.path.join(self.config["summary_dir"], "train"),
                                                           self.sess.graph)
-        self.test_summary_writer = tf.summary.FileWriter(os.path.join(self.config["summary_dir"], "test"))
+        self.summary_writer["test"] = tf.summary.FileWriter(os.path.join(self.config["summary_dir"], "test"))
 
-
+        #self.summary_writer["train"].add_graph(self.sess.graph)
 
 
     # it can summarize scalars and images.
-    def summarize(self, step, summarizer="train", scope="", summaries_dict=None):
+    def summarize(self, step, summarizer = "train", scope = "", summaries_dict = None):
+        
         """
         :param step: the step of the summary
         :param summarizer: use the train summary writer or the test one
@@ -25,8 +27,18 @@ class Summary:
         :param summaries_dict: the dict of the summaries values (tag,value)
         :return:
         """
-        summary_writer = self.train_summary_writer if summarizer == "train" else self.test_summary_writer
+        
+        if summarizer == "train":
+            summary_writer = self.summary_writer["train"]
+        elif summarizer == "test":
+            summary_writer = self.summary_writer["test"]
+
+        
         with tf.variable_scope(scope):
+            print("write summary:")
+            print(summaries_dict)
+            
+            summary_writer.add_graph(self.sess.graph)
 
             if summaries_dict is not None:
                 summary_list = []

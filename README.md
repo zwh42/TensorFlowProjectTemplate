@@ -1,11 +1,15 @@
 # Tensorflow Project Template
-## This work is a modification version based on the [original template](https://github.com/MrGemy95/Tensorflow-Project-Template) from [MrGemy95](https://github.com/MrGemy95)   
+## This work is a modification version based on the [original awesome template](https://github.com/MrGemy95/Tensorflow-Project-Template) from [MrGemy95](https://github.com/MrGemy95)   
 
 (This template is tested with Python 3.7 and TensorFlow 1.x)
 
 # Very Quick Start
-- Training: python mnist_main.py -c ./config/mnist_config.json
-- Evaluation: python model_evaluation.py (you need to modify the file directly for input)
+- Training: 
+  
+  `python mnist_main.py -c ./config/mnist_config.json`
+- Evaluation: 
+  
+  `python model_evaluation.py` (you need to modify the file directly for model path and input data)
 
 # Table Of Contents
 
@@ -20,19 +24,18 @@
         -  [Logger](#logger)
         -  [Configuration](#configuration)
         -  [Main](#main)
- -  [Future Work](#future-work)
- -  [Contributing](#contributing)
- -  [Acknowledgments](#acknowledgments)
+
+
 
 # In a Nutshell   
-In a nutshell here's how to use this template, so **for example** assume you want to implement VGG model so you should do the following:
+In a nutshell here's how to use this template, so **for example** assume you want to implement a MNIST model so you should do the following:
 -  In models folder create a class named VGG that inherit the "base_model" class
 
 ```python
 
     class MNISTModel(BaseModel):
         def __init__(self, config):
-            super(VGGModel, self).__init__(config)
+            super(MNISTModel, self).__init__(config)
             #call the build_model and init_saver functions.
             self.build_model() 
             self.init_saver() 
@@ -55,12 +58,12 @@ In a nutshell here's how to use this template, so **for example** assume you wan
 
     class MNISTTrainer(BaseTrain):
         def __init__(self, sess, model, data, config, logger):
-            super(VGGTrainer, self).__init__(sess, model, data, config, logger)
+            super(MNISTTrainer, self).__init__(sess, model, data, config, logger)
 ```
 - Override these two functions "train_step", "train_epoch" where you write the logic of the training process
 ```python
 
-    def train_epoch(self):
+    def train_epoch(self, current_epoch):
         """
        implement the logic of epoch:
        -loop on the number of iterations in the config and call the train step
@@ -68,7 +71,7 @@ In a nutshell here's how to use this template, so **for example** assume you wan
         """
         pass
 
-    def train_step(self):
+    def train_step(self, current_epoch, current_iter):
         """
        implement the logic of the train step
        - run the tensorflow session
@@ -77,19 +80,21 @@ In a nutshell here's how to use this template, so **for example** assume you wan
         pass
 
 ```
-- In main file, you create the session and instances of the following objects "Model", "Logger", "Data_Generator", "Trainer", and config
+- In main file, you create the session and instances of the following objects "Model", "Logger", "Summary", "DataGenerator", "Trainer", and config
 ```python
-    sess = tf.Session()
-    # create instance of the model you want
-    model = VGGModel(config)
-    # create your data generator
-    data = DataGenerator(config)
     # create tensorboard logger
     logger = Logger(sess, config)
+
+    sess = tf.Session()
+    # create instance of the model you want
+    model = MNISTModel(config)
+    # create your data generator
+    data = DataGenerator(config)
+
 ```
 - Pass the all these objects to the trainer object, and start your training by calling "trainer.train()" 
 ```python
-    trainer = VGGTrainer(sess, model, data, config, logger)
+    trainer = MNISTTrainer(sess, model, data, config, logger, summary)
 
     # here you train your model
     trainer.train()
@@ -104,20 +109,25 @@ Folder structure
 --------------
 
 ```
+training_main.py
+evaluation_main.py
+
 ├──  base
 │   ├── base_model.py   - this file contains the abstract class of the model.
 │   └── base_train.py   - this file contains the abstract class of the trainer.
 │
-│
 ├── model               - this folder contains any model of your project.
 │   └── mnist_model.py
+│
 ├── config               - this folder contains training config settings in json format.
 │   └── mnist_model.py
+│
 ├── trainer             - this folder contains trainers of your project.
 │   └── mnist_trainer.py
 │   
 ├──  wrappers  
-│    └── layer_wrappers.py  - here's the wrappers for frequent used layers in CNN model.  
+│    └── layer_wrappers.py  - here's the wrappers for frequent used layers in TensorFlow model.  
+│
 ├──  data_generator  
 │    └── data_generator.py  - here's the data_generator that is responsible for all data handling.
 │ 

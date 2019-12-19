@@ -10,7 +10,8 @@ def get_args():
         '-c', '--config',
         metavar='C',
         default='None',
-        help='The Configuration file')
+        required=True,
+        help='The configuration json file')
     args = argparser.parse_args()
     
     return args
@@ -42,7 +43,6 @@ def process_config(json_file):
     config["log_dir"] = os.path.join("./experiments", config["exp_name"], "logs/")
     config["model_dir"] = os.path.join("./experiments", config["exp_name"], "model/")    
     
-
     return config
 
 
@@ -54,10 +54,11 @@ def create_dirs(dirs):
     :return exit_code: 0:success -1:failed
     """
     try:
-        for dir_ in dirs:
-            if not os.path.exists(dir_):
-                os.makedirs(dir_)
+        for d in dirs:
+            if not os.path.exists(d):
+                os.makedirs(d)
         return 0
+    
     except Exception as err:
         print("Creating directories error: {0}".format(err))
         exit(-1)
