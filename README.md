@@ -1,6 +1,7 @@
 # Tensorflow Project Template
 ## This work is a modification version based on the [original template](https://github.com/MrGemy95/Tensorflow-Project-Template) from [MrGemy95](https://github.com/MrGemy95)   
 
+(This template is tested with Python 3.7 and TensorFlow 1.x)
 
 # Very Quick Start
 - Training: python mnist_main.py -c ./config/mnist_config.json

@@ -8,11 +8,11 @@ class Logger:
         
         self.config = config
         
-        self.logger = {}
-        self.logger["flow"] = self.add_logger("flow", log_file = os.path.join(self.config["log_dir"], "flow.log"), \
+        self._logger = {}
+        self._logger["flow"] = self.add_logger("flow", log_file = os.path.join(self.config["log_dir"], "flow.log"), \
             message_format = '[%(asctime)s] %(message)s', level=logging.INFO, print_to_screen = True)
         
-        self.logger["train"] = self.add_logger("train", log_file = os.path.join(self.config["log_dir"], "training_record.log"), \
+        self._logger["train"] = self.add_logger("train", log_file = os.path.join(self.config["log_dir"], "training_record.log"), \
             message_format = '%(message)s', level=logging.INFO, print_to_screen = True)
 
  
@@ -32,4 +32,9 @@ class Logger:
 
         return logger
     
-  
+
+    def logging(self, name, message):
+        if name not in self._logger:
+            raise Exception("logger name {} does not exists!".format(name))
+            
+        self._logger[name].info(message)

@@ -4,7 +4,7 @@ from tensorflow.python.framework import graph_util
 class BaseModel:
     def __init__(self, config, logger):
         self.config = config
-        self.logger = logger.logger
+        self.logger = logger
         # init the global step
         self.init_global_step()
         # init the epoch counter
@@ -12,9 +12,9 @@ class BaseModel:
 
     # save function that saves the checkpoint in the path defined in the config file
     def save_checkpoint(self, sess):
-        print("Saving model...")
+        self.logger.logging("flow", "Saving model...")
         self.saver.save(sess, self.config["checkpoint_dir"], self.global_step_tensor)
-        print("Model saved")
+        self.logger.logging("flow", "Model saved")
 
     def save_to_protobuf(self, sess, output_node_node, model_path):
         var_list = tf.global_variables()
@@ -22,18 +22,18 @@ class BaseModel:
 
         with tf.gfile.FastGFile(model_path,  mode = 'wb') as f: 
             f.write(constant_graph.SerializeToString())
-        print("model:{} in protobuf format is saved.".format(model_path))
+        self.logger.logging("flow", "model:{} in protobuf format is saved.".format(model_path))
 
 
     # load latest checkpoint from the experiment path defined in the config file
     def load_checkpoint(self, sess):
         latest_checkpoint = tf.train.latest_checkpoint(self.config["checkpoint_dir"])
         if latest_checkpoint:
-            print("Loading model checkpoint {} ...\n".format(latest_checkpoint))
+            self.logger.logging("flow", "Loading model checkpoint {} ...\n".format(latest_checkpoint))
             self.saver.restore(sess, latest_checkpoint)
-            print("model checkpoint loaded.")
+            self.logger.logging("flow", "model checkpoint loaded.")
         else:
-            print("loading checkpoint failed.")
+            self.logger.logging("flow", "loading checkpoint failed.")
 
     # just initialize a tensorflow variable to use it as epoch counter
     def init_current_epoch(self):

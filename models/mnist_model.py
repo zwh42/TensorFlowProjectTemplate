@@ -11,14 +11,31 @@ class MNISTModel(BaseModel):
         self._input_node_name = self.config["input_node_name"]
         self._output_node_name = self.config["output_node_name"]
 
-        self.logger["flow"].info("model input node name: {}".format(self._input_node_name))
-        self.logger["flow"].info("model output node name: {}".format(self._output_node_name))
+        self.logger.logging("flow", "model input node name: {}".format(self._input_node_name))
+        self.logger.logging("flow", "model output node name: {}".format(self._output_node_name))
         
         self.build_model()
         self.init_saver()
 
+    
+    @property
+    def input_node_name(self):
+        return self._input_node_name
+    
+    @property
+    def output_node_name(self):
+        return self._output_node_name
+    
+    @property
+    def loss(self):
+        return self._loss
+
+    @property
+    def acc(self):
+        return self._acc
+    
     def build_model(self):
-        self.logger["flow"].info("build model: ")
+        self.logger.logging("flow", "build model: ")
         self.is_training = tf.placeholder(tf.bool)
         ## define input output node, name is needed for protobuf saving
         self.x = tf.placeholder(tf.float32, shape=[None] + self.config["input_size"], name = self._input_node_name)
@@ -32,9 +49,9 @@ class MNISTModel(BaseModel):
         layer = conv2d(layer, weight_variable([5, 5, 32, 64]), bias_variable([64]), padding='SAME')
         layer = maxpool2d(layer, k = 2)
         
-        self.logger["flow"].info("before flatten shape: {}".format(layer.shape))
+        self.logger.logging("flow", "before flatten shape: {}".format(layer.shape))
         layer = tf.reshape(layer, [-1, 7*7*64])
-        self.logger["flow"].info("after flatten shape: {}".format(layer.shape))
+        self.logger.logging("flow", "after flatten shape: {}".format(layer.shape))
         layer = tf.layers.dense(layer, 32)
         layer = tf.layers.dense(layer, 10)    
         self.model_output = tf.identity(layer, name = self._output_node_name)        
@@ -44,14 +61,14 @@ class MNISTModel(BaseModel):
 
     def set_train_step(self, y_true, y_pred):
         
-        self.loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits_v2(logits = y_pred, labels = y_true))
+        self._loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits_v2(logits = y_pred, labels = y_true))
         correct_prediction = tf.equal(tf.argmax(y_pred, 1), tf.argmax(y_true, 1))
-        self.acc = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
+        self._acc = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
 
         update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)
         with tf.control_dependencies(update_ops):
             self.optimizer = self.train_step = tf.train.AdamOptimizer(self.config["learning_rate"])
-            self.train_step = self.optimizer.minimize(self.loss, global_step=self.global_step_tensor)
+            self.train_step = self.optimizer.minimize(self._loss, global_step = self.global_step_tensor)
 
 
     def init_saver(self):

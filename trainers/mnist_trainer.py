@@ -27,7 +27,7 @@ class MNISTTrainer(BaseTrainer):
         self.model.save_checkpoint(self.sess)
 
         if current_epoch % self.config["save_protobuf_epoch_interval"]:
-            self.model.save_to_protobuf(self.sess, self.model._output_node_name, \
+            self.model.save_to_protobuf(self.sess, self.model.output_node_name, \
             os.path.join(self.config["model_dir"], "model_epoch_{}.pb".format(current_epoch)))
 
     def train_step(self, current_epoch, current_iter):
@@ -36,8 +36,8 @@ class MNISTTrainer(BaseTrainer):
         _, loss, acc = self.sess.run([self.model.train_step, self.model.loss, self.model.acc],
                                      feed_dict=feed_dict)
         
-        log_text = "epoch: {}, step: {}, loss: {}, acc: {}".\
+        log_text = "epoch: {}, step: {}, loss: {:.6f}, acc: {:.3f}".\
             format(current_epoch, current_iter, loss, acc)
-        self.logger.logger["train"].info(log_text)
+        self.logger.logging("train", log_text)
 
         return loss, acc
