@@ -2,10 +2,10 @@
 ## This work is a modification version based on the [original template](https://github.com/MrGemy95/Tensorflow-Project-Template) from [MrGemy95](https://github.com/MrGemy95)   
 
 
-A simple and well designed structure is essential for any Deep Learning project, so after a lot of practice and contributing in tensorflow projects here's a tensorflow project template that combines   **simplcity**, **best practice for folder structure** and **good OOP design**.
-The main idea is that there's much stuff you do every time you start your tensorflow project, so wrapping all this shared stuff will help you to change just the core idea every time you start a new tensorflow project.
+# Very Quick Start
+- Training: python mnist_main.py -c ./config/mnist_config.json
+- Evaluation: python model_evaluation.py (you need to modify the file directly for input)
 
-**So, here's a simple tensorflow template that help you get into your main project faster and just focus on your core (Model, Training, ...etc)**
 # Table Of Contents
 
 -  [In a Nutshell](#in-a-nutshell)
@@ -29,7 +29,7 @@ In a nutshell here's how to use this template, so **for example** assume you wan
 
 ```python
 
-    class VGGModel(BaseModel):
+    class MNISTModel(BaseModel):
         def __init__(self, config):
             super(VGGModel, self).__init__(config)
             #call the build_model and init_saver functions.
@@ -49,10 +49,10 @@ In a nutshell here's how to use this template, so **for example** assume you wan
 
   ```
    
-- In trainers folder create a VGG trainer that inherit from "base_train" class
+- In trainers folder create a MNIST trainer that inherit from "base_train" class
 ```python
 
-    class VGGTrainer(BaseTrain):
+    class MNISTTrainer(BaseTrain):
         def __init__(self, sess, model, data, config, logger):
             super(VGGTrainer, self).__init__(sess, model, data, config, logger)
 ```
@@ -94,19 +94,9 @@ In a nutshell here's how to use this template, so **for example** assume you wan
     trainer.train()
 
 ```
-**You will find a template file and a simple example in the model and trainer folder that shows you how to try your first model simply.**
 
 
 # In Details
-
-Project architecture 
---------------
-
-<div align="center">
-
-<img align="center" hight="600" width="600" src="https://github.com/Mrgemy95/Tensorflow-Project-Templete/blob/master/figures/diagram.png?raw=true">
-
-</div>
 
 
 Folder structure
@@ -119,25 +109,25 @@ Folder structure
 │
 │
 ├── model               - this folder contains any model of your project.
-│   └── example_model.py
-│
-│
+│   └── mnist_model.py
+├── config               - this folder contains training config settings in json format.
+│   └── mnist_model.py
 ├── trainer             - this folder contains trainers of your project.
-│   └── example_trainer.py
+│   └── mnist_trainer.py
 │   
-├──  mains              - here's the main(s) of your project (you may need more than one main).
-│    └── example_main.py  - here's an example of main that is responsible for the whole pipeline.
-
-│  
-├──  data _loader  
+├──  wrappers  
+│    └── layer_wrappers.py  - here's the wrappers for frequent used layers in CNN model.  
+├──  data_generator  
 │    └── data_generator.py  - here's the data_generator that is responsible for all data handling.
 │ 
 └── utils
-     ├── logger.py
-     └── any_other_utils_you_need
+     ├── logger.py  - here's text logging, a wrapper of Python's logging.
+     ├── summary.py - here's TensorFlow summary setting.
+     └── utils.py - here's other utilities.
+
 
 ```
-
+  
 
 ## Main Components
 
@@ -147,9 +137,10 @@ Folder structure
     
     Base model is an abstract class that must be Inherited by any model you create, the idea behind this is that there's much shared stuff between all models.
     The base model contains:
-    - ***Save*** -This function to save a checkpoint to the desk. 
+    - ***Save_checkpoint*** -This function to save a checkpoint to the desk.
+  - - ***Save_protobuf*** -This function to save a checkpoint to the desk. 
     - ***Load*** -This function to load a checkpoint from the desk.
-    - ***current_epoch, Global_step counters*** -These variables to keep track of the current epoch and global step.
+    - ***current_epoch, current_iter, Global_step counters*** -These variables to keep track of the current epoch and global step.
     - ***Init_Saver*** An abstract function to initialize the saver used for saving and loading the checkpoint, ***Note***: override this function in the model you want to implement.
     - ***Build_model*** Here's an abstract function to define the model, ***Note***: override this function in the model you want to implement.
 - #### **Your model**
@@ -181,23 +172,6 @@ Add your API key [in the configuration file](configs/example.json#L9):
 For example: "comet_api_key": "your key here"
 
 
-### Comet.ml Integration
-This template also supports reporting to Comet.ml which allows you to see all your hyper-params, metrics, graphs, dependencies and more including real-time metric. 
-
-Add your API key [in the configuration file](configs/example.json#L9):
-
-
-For example:  `"comet_api_key": "your key here"` 
-
-Here's how it looks after you start training:
-<div align="center">
-
-<img align="center" width="800" src="https://comet-ml.nyc3.digitaloceanspaces.com/CometDemo.gif">
-
-</div>
-
-You can also link your Github repository to your comet.ml project for full version control. 
-[Here's a live page showing the example from this repo](https://www.comet.ml/gidim/tensorflow-project-template/caba580d8d1547ccaed982693a645507/chart)
 
 
 
@@ -211,16 +185,3 @@ Here's where you combine all previous part.
 3. Create an instance of "Trainer" and pass all previous objects to it.
 4. Now you can train your model by calling "Trainer.train()"
 
-
-# Future Work
-- Replace the data loader part with new tensorflow dataset API.
-
-
-# Contributing
-Any kind of enhancement or contribution is welcomed.
-
-
-# Acknowledgments
-Thanks for my colleague  [Mo'men Abdelrazek](https://github.com/moemen95) for contributing in this work.
-and thanks for [Mohamed Zahran](https://github.com/moh3th1) for the review.
-**Thanks for Jtoy for including the repo in  [Awesome Tensorflow](https://github.com/jtoy/awesome-tensorflow).** 

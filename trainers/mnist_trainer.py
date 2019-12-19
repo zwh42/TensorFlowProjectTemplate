@@ -1,5 +1,6 @@
 from base.base_trainer import BaseTrainer
 import numpy as np
+import os 
 
 
 class MNISTTrainer(BaseTrainer):
@@ -25,6 +26,10 @@ class MNISTTrainer(BaseTrainer):
         self.summary.summarize(cur_it, summaries_dict=summaries_dict)
         self.model.save_checkpoint(self.sess)
 
+        if current_epoch % self.config["save_protobuf_epoch_interval"]:
+            self.model.save_to_protobuf(self.sess, self.model._output_node_name, \
+            os.path.join(self.config["model_dir"], "model_epoch_{}.pb".format(current_epoch)))
+
     def train_step(self, current_epoch, current_iter):
         batch_x, batch_y = next(self.data.next_batch(self.config["batch_size"]))
         feed_dict = {self.model.x: batch_x, self.model.y: batch_y, self.model.is_training: True}
@@ -33,6 +38,6 @@ class MNISTTrainer(BaseTrainer):
         
         log_text = "epoch: {}, step: {}, loss: {}, acc: {}".\
             format(current_epoch, current_iter, loss, acc)
-        self.logger.logger["train"].info(log_text)    
+        self.logger.logger["train"].info(log_text)
 
         return loss, acc

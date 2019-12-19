@@ -9,5 +9,6 @@
   "output_size": [10],
   "input_node_name": "mnist_input",
   "output_node_name": "mnist_output",
+  "save_protobuf_epoch_interval": 3,
   "max_to_keep":5
 }
