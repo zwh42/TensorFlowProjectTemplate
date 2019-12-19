@@ -37,8 +37,8 @@ def process_config(json_file):
     config = get_config_from_json(json_file)
     
     ##add a few dir for later use
-    config["summary_dir"] = os.path.join("../experiments", config["exp_name"], "summary/")
-    config["checkpoint_dir"] = os.path.join("../experiments", config["exp_name"], "checkpoint/")
+    config["summary_dir"] = os.path.join("./experiments", config["exp_name"], "summary/")
+    config["checkpoint_dir"] = os.path.join("./experiments", config["exp_name"], "checkpoint/")
     config["log_dir"] = os.path.join("./experiments", config["exp_name"], "logs/")
     config["model_dir"] = os.path.join("./experiments", config["exp_name"], "model/")    
     

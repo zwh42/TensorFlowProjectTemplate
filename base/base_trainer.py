@@ -2,9 +2,10 @@ import tensorflow as tf
 
 
 class BaseTrainer:
-    def __init__(self, sess, model, data, config, logger):
+    def __init__(self, sess, model, data, config, logger, summary):
         self.model = model
         self.logger = logger
+        self.summary = summary
         self.config = config
         self.sess = sess
         self.data = data
@@ -15,9 +16,9 @@ class BaseTrainer:
 
         if self.config["transfer_learning"] is True:
             self.sess.run(tf.assign(self.model.current_epoch_tensor, 0))
-            print("transfer learning mode, assign epoch = 0.")
+            self.logger.logger["flow"].info("transfer learning mode, assign epoch = 0.")
         else:
-            print("regular training mode, current epoch: {}.".format(self.sess.run(self.model.current_epoch_tensor)))
+            self.logger.logger["flow"].info("regular training mode, current epoch: {}.".format(self.sess.run(self.model.current_epoch_tensor)))
         
         for current_epoch in range(self.model.current_epoch_tensor.eval(self.sess), self.config["num_epochs"] + 1, 1):
             self.train_epoch(current_epoch)

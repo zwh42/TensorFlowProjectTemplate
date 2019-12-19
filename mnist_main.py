@@ -6,6 +6,7 @@ from data_generator.mnist_generator import DataGenerator
 from models.mnist_model import MNISTModel
 from trainers.mnist_trainer import MNISTTrainer
 from utils.logger import Logger
+from utils.summary import Summary
 from utils.utils import *
 
 
@@ -22,25 +23,24 @@ def main():
         print("missing or invalid arguments in config json file: {}".format(args.config))
         exit(0)
 
-    # create the experiments dirs
     create_dirs([config["summary_dir"], config["checkpoint_dir"], config["log_dir"], config["model_dir"]])
     
-    # create tensorflow session
+    logger = Logger(config)
+
+    #create tensorflow session
     sess = tf.Session()
 
-    # create tensorboard logger
-    logger = Logger(sess, config)
+    #create tensorboard summary
+    summary = Summary(sess, config)
    
-    # create your data generator
+    #create your data generator
     data = DataGenerator(config)
     
-    # create an instance of the model you want
+    #create an instance of the model you want
     model = MNISTModel(config, logger)
     
- 
-    
-    # create trainer and pass all the previous components to it
-    trainer = MNISTTrainer(sess, model, data, config, logger)
+    #create trainer and pass all the previous components to it
+    trainer = MNISTTrainer(sess, model, data, config, logger, summary)
     
     #load model if exists
     if config["transfer_learning"]:

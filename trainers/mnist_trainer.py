@@ -3,8 +3,8 @@ import numpy as np
 
 
 class MNISTTrainer(BaseTrainer):
-    def __init__(self, sess, model, data, config,logger):
-        super(MNISTTrainer, self).__init__(sess, model, data, config,logger)
+    def __init__(self, sess, model, data, config,logger, summary):
+        super(MNISTTrainer, self).__init__(sess, model, data, config, logger, summary)
 
     def train_epoch(self, current_epoch):
         loop = range(self.config["num_iter_per_epoch"])
@@ -22,7 +22,7 @@ class MNISTTrainer(BaseTrainer):
             'loss': loss,
             'acc': acc,
         }
-        self.logger.summarize(cur_it, summaries_dict=summaries_dict)
+        self.summary.summarize(cur_it, summaries_dict=summaries_dict)
         self.model.save_checkpoint(self.sess)
 
     def train_step(self, current_epoch, current_iter):
@@ -31,7 +31,7 @@ class MNISTTrainer(BaseTrainer):
         _, loss, acc = self.sess.run([self.model.train_step, self.model.loss, self.model.acc],
                                      feed_dict=feed_dict)
         
-        log_text = "epoch: {}, step: {}, loss: {}, acc: {}\n".\
+        log_text = "epoch: {}, step: {}, loss: {}, acc: {}".\
             format(current_epoch, current_iter, loss, acc)
         self.logger.logger["train"].info(log_text)    
 
